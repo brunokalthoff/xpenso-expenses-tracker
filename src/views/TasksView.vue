@@ -1,17 +1,7 @@
 <template>
-  <div>
-    <TaskComponent />
-  </div>
+  <UserTasks />
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import TaskComponent from "@/components/TaskComponent.vue"; // @ is an alias to /src
-
-export default defineComponent({
-  name: "TaskView",
-  components: {
-    TaskComponent,
-  },
-});
+<script setup lang="ts">
+import UserTasks from "@/components/UserTasks.vue";
 </script>

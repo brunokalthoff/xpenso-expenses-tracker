@@ -1,71 +1,60 @@
-<!-- <template>
+<template>
   <v-app>
-    <v-main>
-      <router-view />
+    <v-app-bar app>
+      <nav
+        class="tw-flex tw-items-center tw-justify-between tw-px-5 tw-min-w-full"
+      >
+        <div class="tw-flex-1 tw-flex tw-justify-start">
+          <router-link class="expensifyness" to="/">XPENSO</router-link>
+        </div>
+        <div>
+          <router-link v-if="isLoggedIn" to="/tasks">Tasks</router-link>
+        </div>
+        <div class="tw-flex tw-gap-5 tw-flex-1 tw-justify-end">
+          <router-link v-if="!isLoggedIn" to="/login">LOGIN</router-link>
+          <router-link v-if="!isLoggedIn" to="/register">REGISTER</router-link>
+          <button v-if="isLoggedIn" @click="logout">Logout</button>
+        </div>
+      </nav>
+    </v-app-bar>
+
+    <!-- Sizes your content based upon application components -->
+    <v-main class="tw-py-20">
+      <!-- Provides the application the proper gutter -->
+      <v-container fluid>
+        <!-- If using vue-router -->
+        <router-view />
+      </v-container>
     </v-main>
+
+    <v-footer app class="tw-flex tw-items-center tw-justify-center">
+      Copyright 2022 by XPENSO
+    </v-footer>
   </v-app>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "App",
-
-  data() {
-    return {
-      //
-    };
-  },
-});
-</script> -->
-
-<template>
-  <nav>
-    <span v-if="!isLoggedIn">
-      <router-link to="/">Login</router-link> |
-      <router-link to="/register">Register</router-link>
-    </span>
-    <span v-else>
-      <router-link to="/tasks">Tasks</router-link> |
-      <button @click="logout">Logout</button>
-    </span>
-  </nav>
-  <router-view />
-</template>
-
 <script setup lang="ts">
-import { ref } from "vue"; // used for conditional rendering
-import firebase from "firebase/compat/app";
-import { useRouter } from "vue-router";
+import { logout } from "./helpers/fb.helpers";
+import { useUserDataStore } from "@/store/userData";
+import { storeToRefs } from "pinia";
 
-const router = useRouter();
-const isLoggedIn = ref(true);
-// runs after firebase is initialized
-firebase.auth().onAuthStateChanged(function (user) {
-  if (user) {
-    isLoggedIn.value = true; // if we have a user
-  } else {
-    isLoggedIn.value = false; // if we do not
-  }
-});
-const logout = () => {
-  firebase.auth().signOut();
-  router.push("/");
-};
+const store = useUserDataStore();
+const { isLoggedIn } = storeToRefs(store);
+const { checkIsUserLoggedIn } = store;
+checkIsUserLoggedIn();
 </script>
 
 <style>
-nav {
-  padding: 30px;
+.expensifyness {
+  font-family: "Press Start 2P", cursive;
 }
 
 nav a {
   font-weight: bold;
-  color: rgb(0, 34, 34);
+  color: hsl(288, 100%, 7%);
 }
 
 nav a.router-link-exact-active {
-  color: teal;
+  color: #a43cbe;
 }
 </style>

@@ -1,86 +1,94 @@
 <template>
-  <div class="container w-80 mx-auto my-20 px-6 py-6 shadow">
-    <h1 class="text-teal-600 font-bold font-sans text-4xl text-center">
-      {{ formType }}
-    </h1>
-    <div class="h-0.5 bg-gray-200 w-36 mx-auto mt-2.5"></div>
-    <form>
-      <div class="flex flex-col my-5">
-        <label class="my-2" for="email">Email</label>
-        <input
-          v-model="email"
-          type="email"
-          id="email"
-          name="email"
-          class="mt-1 mb-3 shadow-md border-none focus:ring-transparent rounded-sm bg-gray-100 text-teal-500"
-        />
-        <label class="my-2" for="psw">Password</label>
-        <input
-          v-model="password"
-          type="password"
-          id="psw"
-          name="psw"
-          class="mt-1 mb-3 shadow-md border-none focus:ring-transparent rounded-sm bg-gray-100 text-teal-500"
-        />
-      </div>
-      <div class="text-center mt-3">
-        <button
-          type="reset"
-          class="px-7 py-2 mx-2 font-semibold text-gray-800 bg-gray-100 rounded"
-        >
-          Reset
-        </button>
-        <button
-          v-if="formType === 'Login'"
-          @click.prevent="login"
-          class="px-7 py-2 mx-2 font-semibold text-white bg-teal-600 rounded"
+  <v-card elevation="8" max-width="fit-content" class="mx-auto mb-10">
+    <div class="tw-container tw-w-80 tw-mb-10 tw-mx-auto tw-px-6 tw-pt-6">
+      <v-form elevation="8">
+        <h1
+          class="headline tw-font-bold tw-font-sans tw-text-4xl tw-text-center"
         >
           {{ formType }}
-        </button>
-        <button
-          v-else
-          @click.prevent="register"
-          class="px-7 py-2 mx-2 font-semibold text-white bg-teal-600 rounded"
-        >
-          {{ formType }}
-        </button>
-      </div>
+        </h1>
+        <br /><br />
+        <v-row align="center">
+          <v-col cols="12">
+            <v-text-field
+              v-model.trim="email"
+              type="email"
+              label="Email"
+              hide-details="auto"
+              required
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <v-text-field
+              password
+              type="password"
+              v-model="password"
+              label="Password"
+              required
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row justify="space-between">
+          <v-col
+            class="text-left tw-text-sm hover:tw-underline tw-cursor-pointer"
+            cols="7"
+            align-self="end"
+            >Reset password?</v-col
+          >
+          <v-col cols="5">
+            <v-btn
+              color="primary"
+              type="submit"
+              v-if="formType === 'Login'"
+              @click.prevent="login"
+              >{{ formType }}</v-btn
+            >
+            <v-btn
+              color="primary"
+              type="submit"
+              v-if="formType === 'Register'"
+              @click.prevent="register"
+              >{{ formType }}</v-btn
+            >
+          </v-col>
+        </v-row>
+      </v-form>
       {{ errorMsg }}
-    </form>
-  </div>
+    </div>
+  </v-card>
 
   <div class="log-reg-btn">
-    <button class="oauth-btn" v-if="formType === 'Login'" @click="googleSignIn">
+    <v-btn class="oauth-btn" v-if="formType === 'Login'" @click="googleSignIn">
       <img
         src="https://upload.wikimedia.org/wikipedia/commons/archive/5/53/20210618182605%21Google_%22G%22_Logo.svg"
         alt=""
-      />
-      Login with Google
-    </button>
-    <button class="oauth-btn" v-else @click="googleSignIn">
+      />&nbsp;
+      {{ formType }}
+      with Google
+    </v-btn>
+    <v-btn class="oauth-btn" v-else @click="googleSignIn">
       <img
         src="https://upload.wikimedia.org/wikipedia/commons/archive/5/53/20210618182605%21Google_%22G%22_Logo.svg"
         alt=""
-      />
-      Register with Google
-    </button>
+      />&nbsp; {{ formType }} with Google
+    </v-btn>
   </div>
 
   <div class="log-reg-btn">
-    <button class="oauth-btn" v-if="formType === 'Login'" @click="gitHubSignIn">
+    <v-btn class="oauth-btn" v-if="formType === 'Login'" @click="gitHubSignIn">
       <img
         src="https://upload.wikimedia.org/wikipedia/commons/9/95/Font_Awesome_5_brands_github.svg"
         alt=""
-      />
-      Login with GitHub
-    </button>
-    <button class="oauth-btn" v-else @click="gitHubSignIn">
+      />&nbsp; {{ formType }} with GitHub
+    </v-btn>
+    <v-btn class="oauth-btn" v-else @click="gitHubSignIn">
       <img
         src="https://upload.wikimedia.org/wikipedia/commons/9/95/Font_Awesome_5_brands_github.svg"
         alt=""
-      />
-      Register with GitHub
-    </button>
+      />&nbsp; {{ formType }} with GitHub
+    </v-btn>
   </div>
 </template>
 
@@ -159,7 +167,10 @@ const gitHubSignIn = () => {
 };
 </script>
 
-<style>
+<style scoped>
+.headline {
+  color: hsl(285, 13%, 19%);
+}
 .log-reg-btn button {
   display: flex;
   align-items: center;

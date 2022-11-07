@@ -3,9 +3,17 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-  background: hsl(180, 100%, 99%);
+  background: hsl(288, 100%, 99%);
   font-family: "Roboto", Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
