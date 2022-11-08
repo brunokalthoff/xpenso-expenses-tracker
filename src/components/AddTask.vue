@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-form @submit.prevent="addTask">
+    <v-form @submit.prevent="createTask">
       <v-row>
         <v-col cols="8">
           <v-text-field
@@ -32,9 +32,10 @@
 <script setup lang="ts">
 import { ref, Ref } from "vue";
 import { options } from "@/helpers/helpers";
-import { addTaskByUserId } from "@/helpers/db.helpers";
+import { addTask } from "@/helpers/db.helpers";
 import { TaskStatus, Task } from "@/types/types";
 import { useUserDataStore } from "@/store/userData";
+import { v4 } from "uuid";
 
 const store = useUserDataStore();
 const { getTasks } = store;
@@ -42,16 +43,16 @@ const newTitle: Ref<string> = ref("");
 const newStatus: Ref<TaskStatus> = ref("tobook");
 const infoMessage: Ref<string> = ref("");
 
-const addTask = async () => {
+const createTask = async () => {
   try {
     if (newTitle.value === "") throw "title required";
     const dataObj: Task = {
-      id: "",
+      id: v4(),
       name: newTitle.value,
       status: newStatus.value,
-      userId: "",
+      userId: "123",
     };
-    const docId = await addTaskByUserId(dataObj);
+    const docId = await addTask(dataObj);
     getTasks();
     console.log("Document was created with ID:", docId);
     newTitle.value = "";

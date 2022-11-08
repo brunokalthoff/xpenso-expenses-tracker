@@ -1,9 +1,13 @@
-import { getTasksFromUserWithStatus } from "@/helpers/db.helpers";
+import { getTasksByUserAndStatus } from "@/helpers/db.helpers";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { isUserLoggedIn } from "@/helpers/fb.helpers";
 
-export const useUserDataStore = defineStore("counter", () => {
+export const useUserDataStore = defineStore("userData", () => {
+  const isLoggedIn = ref(false);
+  const userObject = ref();
+  const checkIsUserLoggedIn = () => isUserLoggedIn(isLoggedIn);
+
   const toBook = ref();
   const toHandIn = ref();
   const handedIn = ref();
@@ -11,17 +15,14 @@ export const useUserDataStore = defineStore("counter", () => {
 
   const getTasks = async () => {
     try {
-      toBook.value = await getTasksFromUserWithStatus("123", "tobook");
-      toHandIn.value = await getTasksFromUserWithStatus("123", "tohandin");
-      handedIn.value = await getTasksFromUserWithStatus("123", "handedin");
-      reimbursed.value = await getTasksFromUserWithStatus("123", "reimbursed");
+      toBook.value = await getTasksByUserAndStatus("123", "tobook");
+      toHandIn.value = await getTasksByUserAndStatus("123", "tohandin");
+      handedIn.value = await getTasksByUserAndStatus("123", "handedin");
+      reimbursed.value = await getTasksByUserAndStatus("123", "reimbursed");
     } catch (err) {
       console.log(err);
     }
   };
-
-  const isLoggedIn = ref(false);
-  const checkIsUserLoggedIn = () => isUserLoggedIn(isLoggedIn);
 
   return {
     toBook,

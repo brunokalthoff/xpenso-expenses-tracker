@@ -5,24 +5,14 @@ import {
   getDocs,
   query,
   where,
+  doc,
+  setDoc,
   deleteDoc,
-  onSnapshot,
   addDoc,
+  documentId,
 } from "firebase/firestore";
-import { v4 } from "uuid";
 
-export const getAllTasksFromUser = async (userId: string) => {
-  const q = query(collection(db, "tasks"), where("userId", "==", userId));
-  const querySnapshot = await getDocs(q);
-  const data: Task[] = [];
-  querySnapshot.forEach((doc) => {
-    const d: Task = doc.data() as Task;
-    data.push(d);
-  });
-  return data;
-};
-
-export const getTasksFromUserWithStatus = async (
+export const getTasksByUserAndStatus = async (
   userId: string,
   status: TaskStatus
 ) => {
@@ -38,24 +28,6 @@ export const getTasksFromUserWithStatus = async (
     data.push(d);
   });
   return data;
-};
-
-export const getTasksByUserIdAndStatus = async (
-  userId: string,
-  status: TaskStatus
-) => {
-  const q = query(
-    collection(db, "tasks"),
-    where("userId", "==", userId),
-    where("status", "==", status)
-  );
-  onSnapshot(q, (querySnapshot) => {
-    const data: Task[] = [];
-    querySnapshot.forEach((doc) => {
-      data.push(doc.data().name);
-    });
-    return data;
-  });
 };
 
 export const deleteTask = async (taskId: string) => {
@@ -66,11 +38,23 @@ export const deleteTask = async (taskId: string) => {
   });
 };
 
-export const addTaskByUserId = async (dataObj: Task) => {
-  dataObj.id = v4();
-  dataObj.userId = "123";
-
+export const addTask = async (dataObj: Task) => {
   const colRef = collection(db, "tasks");
   const docRef = await addDoc(colRef, dataObj);
   return docRef.id;
+};
+
+export const getDocIdbyTaskId = async (taskId: string) => {
+  const q = query(collection(db, "tasks"), where("id", "==", taskId));
+  const querySnapshot = await getDocs(q);
+  const docArr: string[] = [];
+  querySnapshot.forEach((doc) => {
+    docArr.push(doc.id);
+  });
+  return docArr[0];
+};
+
+export const updateTask = async (docId: string, newStatus: TaskStatus) => {
+  const cityRef = doc(db, "tasks", docId);
+  await setDoc(cityRef, { status: newStatus }, { merge: true });
 };
