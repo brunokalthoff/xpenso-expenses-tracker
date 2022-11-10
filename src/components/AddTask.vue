@@ -2,7 +2,7 @@
   <v-container>
     <v-form @submit.prevent="createTask">
       <v-row>
-        <v-col cols="8">
+        <v-col cols="8" lg="8">
           <v-text-field
             label="New task..."
             required
@@ -11,12 +11,12 @@
           ></v-text-field>
         </v-col>
 
-        <v-col cols="2">
+        <v-col cols="4" lg="2">
           <v-select :items="options" label="Status" v-model="newStatus">
           </v-select>
         </v-col>
 
-        <v-col cols="2">
+        <v-col cols="12" lg="2">
           <div class="tw-min-h-full">
             <v-btn min-height="55" block type="submit" color="primary"
               >Add</v-btn
@@ -36,9 +36,12 @@ import { addTask } from "@/helpers/db.helpers";
 import { TaskStatus, Task } from "@/types/types";
 import { useUserDataStore } from "@/store/userData";
 import { v4 } from "uuid";
+import { storeToRefs } from "pinia";
 
-const store = useUserDataStore();
-const { getTasks } = store;
+const userDataStore = useUserDataStore();
+const { userObject } = storeToRefs(userDataStore);
+const { getTasks } = userDataStore;
+
 const newTitle: Ref<string> = ref("");
 const newStatus: Ref<TaskStatus> = ref("tobook");
 const infoMessage: Ref<string> = ref("");
@@ -50,11 +53,10 @@ const createTask = async () => {
       id: v4(),
       name: newTitle.value,
       status: newStatus.value,
-      userId: "123",
+      userId: userObject.value?.uid || "",
     };
-    const docId = await addTask(dataObj);
+    await addTask(dataObj);
     getTasks();
-    console.log("Document was created with ID:", docId);
     newTitle.value = "";
     newStatus.value = "tobook";
   } catch (err) {

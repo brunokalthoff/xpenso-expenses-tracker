@@ -9,16 +9,15 @@ import {
   setDoc,
   deleteDoc,
   addDoc,
-  documentId,
 } from "firebase/firestore";
 
 export const getTasksByUserAndStatus = async (
-  userId: string,
-  status: TaskStatus
+  status: TaskStatus,
+  userId?: string
 ) => {
   const q = query(
     collection(db, "tasks"),
-    where("userId", "==", userId),
+    where("userId", "==", userId || ""),
     where("status", "==", status)
   );
   const querySnapshot = await getDocs(q);

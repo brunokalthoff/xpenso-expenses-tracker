@@ -57,7 +57,6 @@ import { onBeforeUnmount } from "vue";
 import { useUserDataStore } from "@/store/userData";
 import { useSortTasksStore } from "@/store/sortTasks";
 import { storeToRefs } from "pinia";
-import { TaskState } from "@firebase/firestore";
 import { TaskStatus } from "@/types/types";
 
 const sortTasks = useSortTasksStore();

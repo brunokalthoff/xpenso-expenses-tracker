@@ -1,13 +1,18 @@
 <template>
-  <v-card elevation="8" max-width="fit-content" class="mx-auto mb-10">
-    <div class="tw-container tw-w-80 tw-mb-10 tw-mx-auto tw-px-6 tw-pt-6">
-      <v-form elevation="8">
+  <div class="text-center">
+    <v-snackbar centered v-model="snackbar" timeout="2000">
+      {{ errorMsg }}
+    </v-snackbar>
+  </div>
+
+  <v-card elevation="8" max-width="fit-content" class="mx-auto mb-10 tw-mt-8">
+    <div class="tw-container tw-w-80 tw-mb-9 tw-mx-auto tw-px-6 tw-pt-6">
+      <v-form>
         <h1
-          class="headline tw-font-bold tw-font-sans tw-text-4xl tw-text-center"
+          class="headline tw-font-bold tw-font-sans tw-text-4xl tw-text-center tw-mb-10"
         >
           {{ formType }}
         </h1>
-        <br /><br />
         <v-row align="center">
           <v-col cols="12">
             <v-text-field
@@ -35,19 +40,30 @@
             class="text-left tw-text-sm hover:tw-underline tw-cursor-pointer"
             cols="7"
             align-self="end"
-            >Reset password?</v-col
+          >
+            <div
+              :style="[
+                formType === 'Login'
+                  ? { visibility: 'visible' }
+                  : { visibility: 'hidden' },
+              ]"
+            >
+              Reset password?
+            </div></v-col
           >
           <v-col cols="5">
             <v-btn
-              color="primary"
+              color="secondary"
               type="submit"
+              height="45"
               v-if="formType === 'Login'"
               @click.prevent="login"
               >{{ formType }}</v-btn
             >
             <v-btn
-              color="primary"
+              color="secondary"
               type="submit"
+              height="45"
               v-if="formType === 'Register'"
               @click.prevent="register"
               >{{ formType }}</v-btn
@@ -55,7 +71,6 @@
           </v-col>
         </v-row>
       </v-form>
-      {{ errorMsg }}
     </div>
   </v-card>
 
@@ -99,6 +114,7 @@ import { ErrorData } from "@firebase/util";
 import { getErrorMessage } from "../helpers/helpers";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
+const snackbar = ref(false);
 
 defineProps({
   formType: String,
@@ -119,6 +135,7 @@ const register = () => {
     })
     .catch((error: ErrorData) => {
       console.log(error.code);
+      snackbar.value = true;
       errorMsg.value = getErrorMessage(error.code as string);
     });
 };
@@ -131,6 +148,7 @@ const login = () => {
       router.push("/tasks"); // redirect to the feed
     })
     .catch((error: ErrorData) => {
+      snackbar.value = true;
       errorMsg.value = getErrorMessage(error.code as string);
     });
 };
