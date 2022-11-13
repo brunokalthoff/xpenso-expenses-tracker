@@ -53,7 +53,16 @@ export const getDocIdbyTaskId = async (taskId: string) => {
   return docArr[0];
 };
 
-export const updateTask = async (docId: string, newStatus: TaskStatus) => {
+export const updateTaskStatus = async (
+  docId: string,
+  newStatus: TaskStatus
+) => {
   const cityRef = doc(db, "tasks", docId);
   await setDoc(cityRef, { status: newStatus }, { merge: true });
+};
+
+export const updateTaskName = async (taskId: string, newName: string) => {
+  const docId = await getDocIdbyTaskId(taskId);
+  const cityRef = doc(db, "tasks", docId);
+  await setDoc(cityRef, { name: newName }, { merge: true });
 };

@@ -1,10 +1,4 @@
 <template>
-  <div class="text-center">
-    <v-snackbar centered v-model="snackbar" timeout="2000">
-      {{ errorMsg }}
-    </v-snackbar>
-  </div>
-
   <v-card elevation="8" max-width="fit-content" class="mx-auto mb-10 tw-mt-8">
     <div class="tw-container tw-w-80 tw-mb-9 tw-mx-auto tw-px-6 tw-pt-6">
       <v-form>
@@ -53,7 +47,7 @@
           >
           <v-col cols="5">
             <v-btn
-              color="secondary"
+              color="#39CCCC"
               type="submit"
               height="45"
               v-if="formType === 'Login'"
@@ -61,7 +55,7 @@
               >{{ formType }}</v-btn
             >
             <v-btn
-              color="secondary"
+              color="#39CCCC"
               type="submit"
               height="45"
               v-if="formType === 'Register'"
@@ -74,7 +68,7 @@
     </div>
   </v-card>
 
-  <div class="log-reg-btn">
+  <div class="log-reg-btn tw-w-80 mx-auto">
     <v-btn class="oauth-btn" v-if="formType === 'Login'" @click="googleSignIn">
       <img
         src="https://upload.wikimedia.org/wikipedia/commons/archive/5/53/20210618182605%21Google_%22G%22_Logo.svg"
@@ -91,8 +85,13 @@
     </v-btn>
   </div>
 
-  <div class="log-reg-btn">
-    <v-btn class="oauth-btn" v-if="formType === 'Login'" @click="gitHubSignIn">
+  <div class="log-reg-btn tw-w-80 mx-auto">
+    <v-btn
+      class="oauth-btn"
+      block
+      v-if="formType === 'Login'"
+      @click="gitHubSignIn"
+    >
       <img
         src="https://upload.wikimedia.org/wikipedia/commons/9/95/Font_Awesome_5_brands_github.svg"
         alt=""
@@ -114,7 +113,12 @@ import { ErrorData } from "@firebase/util";
 import { getErrorMessage } from "../helpers/helpers";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-const snackbar = ref(false);
+
+import { useErrorMessageStore } from "@/store/errorMessage";
+import { storeToRefs } from "pinia";
+
+const errorMessageStore = useErrorMessageStore();
+const { errorMsg, snackbar } = storeToRefs(errorMessageStore);
 
 defineProps({
   formType: String,
@@ -122,13 +126,12 @@ defineProps({
 
 const email = ref("");
 const password = ref("");
-const errorMsg = ref("");
 const router = useRouter();
 
 const register = () => {
   firebase
     .auth() // get the auth api
-    .createUserWithEmailAndPassword(email.value, password.value) // need .value because ref()
+    .createUserWithEmailAndPassword(email.value, password.value)
     .then((data) => {
       console.log("Successfully registered!", data);
       router.push("/tasks"); // redirect to the feed
@@ -142,10 +145,10 @@ const register = () => {
 const login = () => {
   firebase
     .auth() // get the auth api
-    .signInWithEmailAndPassword(email.value, password.value) // need .value because ref()
+    .signInWithEmailAndPassword(email.value, password.value)
     .then((data) => {
       console.log("Successfully logged in!", data);
-      router.push("/tasks"); // redirect to the feed
+      router.push("/user/tasks"); // redirect to the feed
     })
     .catch((error: ErrorData) => {
       snackbar.value = true;
@@ -162,7 +165,7 @@ const googleSignIn = () => {
     .then(() => {
       // let token = result.credential?.accessToken;
       // let user = result.user;
-      router.push("/tasks");
+      router.push("/user/tasks");
     })
     .catch((err) => {
       console.log(err);
@@ -198,7 +201,7 @@ const gitHubSignIn = () => {
   padding: 0.5rem 2rem;
   border-radius: 5px;
   margin: 0 auto;
-  min-width: 18rem;
+  width: 100%;
   margin-top: 0.5rem;
 }
 

@@ -4,6 +4,8 @@ import RegisterView from "../views/RegisterView.vue";
 import TasksView from "../views/TasksView.vue";
 import LoginView from "../views/LoginView.vue";
 import ProfileView from "../views/ProfileView.vue";
+import { useUserDataStore } from "@/store/userData";
+import { storeToRefs } from "pinia";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -22,20 +24,48 @@ const routes: Array<RouteRecordRaw> = [
     component: RegisterView,
   },
   {
-    path: "/user/tasks",
-    name: "tasks",
-    component: TasksView,
+    path: "/user",
+    name: "user",
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: "tasks",
+        component: TasksView,
+      },
+      {
+        path: "profile",
+        component: ProfileView,
+      },
+    ],
   },
   {
-    path: "/user/profile",
-    name: "profile",
-    component: ProfileView,
+    // path: "*",
+    path: "/:catchAll(.*)",
+    name: "NotFound",
+    redirect: "/",
   },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach(async (to) => {
+  const userDataStore = useUserDataStore();
+  const { isLoggedIn } = storeToRefs(userDataStore);
+  const { checkIsUserLoggedIn } = userDataStore;
+
+  checkIsUserLoggedIn();
+
+  console.log(isLoggedIn.value);
+  if (to.meta.requiresAuth && !isLoggedIn.value) {
+    return {
+      path: "/login",
+      // save the location we were at to come back later
+      query: { redirect: to.fullPath },
+    };
+  }
 });
 
 export default router;

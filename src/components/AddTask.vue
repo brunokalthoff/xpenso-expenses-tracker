@@ -4,15 +4,20 @@
       <v-row>
         <v-col cols="8" lg="8">
           <v-text-field
+            hide-details
             label="New task..."
             required
             v-model.trim="newTitle"
-            hide-details="auto"
           ></v-text-field>
         </v-col>
 
         <v-col cols="4" lg="2">
-          <v-select :items="options" label="Status" v-model="newStatus">
+          <v-select
+            hide-details
+            :items="options"
+            label="Status"
+            v-model="newStatus"
+          >
           </v-select>
         </v-col>
 

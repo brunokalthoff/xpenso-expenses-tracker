@@ -51,9 +51,6 @@
 <script setup lang="ts">
 import AddTask from "./AddTask.vue";
 import TaskCard from "./TaskCard.vue";
-import firebase from "firebase/compat/app";
-import { useRouter } from "vue-router";
-import { onBeforeUnmount } from "vue";
 import { useUserDataStore } from "@/store/userData";
 import { useSortTasksStore } from "@/store/sortTasks";
 import { storeToRefs } from "pinia";
@@ -66,20 +63,7 @@ const userData = useUserDataStore();
 const { toBook, toHandIn, handedIn, reimbursed } = storeToRefs(userData);
 const { getTasks } = userData;
 
-const router = useRouter();
-const authListener = firebase.auth().onAuthStateChanged(function (user) {
-  if (!user) {
-    // not logged in
-    router.push("/login");
-  } else {
-    getTasks();
-  }
-});
-
-onBeforeUnmount(() => {
-  // clear up listener
-  authListener();
-});
+getTasks();
 
 const onDropCard = async (newStatus: TaskStatus) => {
   await onDrop(newStatus);

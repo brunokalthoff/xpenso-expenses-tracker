@@ -12,6 +12,7 @@
     "@types/uuid": "^8.3.4",
     "core-js": "^3.8.3",
     "firebase": "^9.13.0",
+    "is-online": "^10.0.0",
     "pinia": "^2.0.23",
     "roboto-fontface": "*",
     "uuid": "^9.0.0",

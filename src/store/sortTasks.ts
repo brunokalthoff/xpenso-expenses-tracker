@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { updateTask, getDocIdbyTaskId } from "@/helpers/db.helpers";
+import { updateTaskStatus, getDocIdbyTaskId } from "@/helpers/db.helpers";
 import { TaskStatus } from "@/types/types";
 
 export const useSortTasksStore = defineStore("sortTask", () => {
@@ -12,7 +12,7 @@ export const useSortTasksStore = defineStore("sortTask", () => {
   };
 
   const onDrop = async (newStatus: TaskStatus) => {
-    await updateTask(taskID.value, newStatus);
+    await updateTaskStatus(taskID.value, newStatus);
   };
 
   return {

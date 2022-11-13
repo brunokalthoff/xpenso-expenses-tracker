@@ -1,4 +1,5 @@
 import { TaskStatus } from "@/types/types";
+import isOnline from "is-online";
 
 export const options: TaskStatus[] = [
   "tobook",
@@ -25,4 +26,14 @@ export const getErrorMessage = (errorCoce: string) => {
     default:
       return "Email or password was incorrect";
   }
+};
+
+export const checkInternetConnection = async () => {
+  const status = await isOnline();
+  console.log("online: ", status);
+  return status;
+};
+
+export const abbreviateUserName = (word?: string | null) => {
+  return word ? word.replace(/(\w)\w*\W*/g, (_, i) => i.toUpperCase()) : "UA";
 };

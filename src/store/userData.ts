@@ -5,7 +5,7 @@ import { isUserLoggedIn } from "@/helpers/fb.helpers";
 import { User } from "@/types/types";
 
 export const useUserDataStore = defineStore("userData", () => {
-  const isLoggedIn = ref(false);
+  const isLoggedIn = ref(true);
   const userObject: Ref<User | undefined> = ref(undefined);
   const checkIsUserLoggedIn = () => isUserLoggedIn(isLoggedIn, userObject);
 
@@ -15,11 +15,16 @@ export const useUserDataStore = defineStore("userData", () => {
   const reimbursed = ref();
 
   const getTasks = async () => {
+    const authUser = Object.keys(window.localStorage).filter((item) =>
+      item.startsWith("f")
+    )[0];
+    console.log("authUser: ", authUser);
     try {
       toBook.value = await getTasksByUserAndStatus(
         "tobook",
         userObject.value?.uid
       );
+
       toHandIn.value = await getTasksByUserAndStatus(
         "tohandin",
         userObject.value?.uid
@@ -34,6 +39,7 @@ export const useUserDataStore = defineStore("userData", () => {
       );
     } catch (err) {
       console.log(err);
+      getTasks();
     }
   };
 

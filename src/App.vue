@@ -18,9 +18,7 @@
           <button v-if="isLoggedIn" @click="logOutUser">Logout</button>
           <router-link to="/user/profile">
             <v-avatar v-if="isLoggedIn" color="#d3d9da" size="36">{{
-              userObject?.name?.replace(/(\w)\w*\W*/g, (_, i) =>
-                i.toUpperCase()
-              ) || "UA"
+              abbreviateUserName(userObject?.name)
             }}</v-avatar></router-link
           >
         </div>
@@ -31,6 +29,8 @@
     <v-main class="tw-py-28">
       <!-- Provides the application the proper gutter -->
       <v-container fluid>
+        <!-- Error snackbar  -->
+        <ErrorMessage />
         <!-- If using vue-router -->
         <router-view />
       </v-container>
@@ -43,9 +43,19 @@
 </template>
 
 <script setup lang="ts">
-import { logout } from "./helpers/fb.helpers";
 import { useUserDataStore } from "@/store/userData";
 import { storeToRefs } from "pinia";
+import { checkInternetConnection } from "@/helpers/helpers";
+import firebase from "firebase/compat/app";
+import { useRouter } from "vue-router";
+import ErrorMessage from "./components/ErrorMessage.vue";
+import { useErrorMessageStore } from "@/store/errorMessage";
+import { abbreviateUserName } from "@/helpers/helpers";
+
+const errorMessageStore = useErrorMessageStore();
+const { errorMsg, snackbar, timeout } = storeToRefs(errorMessageStore);
+
+const router = useRouter();
 
 const store = useUserDataStore();
 const { isLoggedIn, userObject } = storeToRefs(store);
@@ -54,16 +64,29 @@ const { checkIsUserLoggedIn } = store;
 const logOutUser = () => {
   userObject.value = undefined;
   isLoggedIn.value = false;
-  logout();
+
+  firebase.auth().signOut();
+  router.push("/");
 };
 
 checkIsUserLoggedIn();
+setInterval(async () => {
+  const online = await checkInternetConnection();
+  if (!online) {
+    errorMsg.value = "You are offline <v-icon>mdi-wifi</v-icon>";
+    snackbar.value = true;
+    timeout.value = -1;
+  } else {
+    errorMsg.value = "You are back online <v-icon>mdi-wifi</v-icon>";
+    timeout.value = 5000;
+  }
+}, 5000);
 </script>
 
 <style>
 .expensifyness {
   font-family: "Press Start 2P", cursive;
-  text-shadow: 2px 2px #1500ff;
+  text-shadow: 2px 2px hsl(292, 88%, 20%);
 }
 
 nav a {
@@ -72,6 +95,6 @@ nav a {
 }
 
 nav a.router-link-exact-active {
-  color: #6ac0cb;
+  color: #a6b5b5;
 }
 </style>

@@ -1,20 +1,12 @@
 import firebase from "firebase/compat/app";
-import { useRouter } from "vue-router";
 import { Ref } from "vue";
 import { User } from "@/types/types";
 
-const router = useRouter();
-
-export const logout = () => {
-  firebase.auth().signOut();
-  router.push("/");
-};
-
-export const isUserLoggedIn = (
+export const isUserLoggedIn = async (
   loginStatus: Ref<boolean>,
   userObj: Ref<User | undefined>
 ) => {
-  firebase.auth().onAuthStateChanged(function (user) {
+  firebase.auth().onAuthStateChanged(async function (user) {
     if (user) {
       loginStatus.value = true;
       const newUserObj: User = {
