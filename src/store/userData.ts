@@ -15,16 +15,11 @@ export const useUserDataStore = defineStore("userData", () => {
   const reimbursed = ref();
 
   const getTasks = async () => {
-    const authUser = Object.keys(window.localStorage).filter((item) =>
-      item.startsWith("f")
-    )[0];
-    console.log("authUser: ", authUser);
     try {
       toBook.value = await getTasksByUserAndStatus(
         "tobook",
         userObject.value?.uid
       );
-
       toHandIn.value = await getTasksByUserAndStatus(
         "tohandin",
         userObject.value?.uid
@@ -39,7 +34,6 @@ export const useUserDataStore = defineStore("userData", () => {
       );
     } catch (err) {
       console.log(err);
-      getTasks();
     }
   };
 

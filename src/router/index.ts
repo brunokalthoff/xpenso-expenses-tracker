@@ -56,8 +56,6 @@ router.beforeEach(async (to) => {
   const { isLoggedIn } = storeToRefs(userDataStore);
   const { checkIsUserLoggedIn } = userDataStore;
 
-  checkIsUserLoggedIn();
-
   console.log(isLoggedIn.value);
   if (to.meta.requiresAuth && !isLoggedIn.value) {
     return {

@@ -60,10 +60,17 @@ const sortTasks = useSortTasksStore();
 const { onDrop } = sortTasks;
 
 const userData = useUserDataStore();
-const { toBook, toHandIn, handedIn, reimbursed } = storeToRefs(userData);
-const { getTasks } = userData;
+const { toBook, toHandIn, handedIn, reimbursed, userObject } =
+  storeToRefs(userData);
+const { getTasks, checkIsUserLoggedIn } = userData;
 
-getTasks();
+if (userObject.value !== undefined) {
+  getTasks();
+} else {
+  setTimeout(() => {
+    getTasks();
+  }, 1000);
+}
 
 const onDropCard = async (newStatus: TaskStatus) => {
   await onDrop(newStatus);
